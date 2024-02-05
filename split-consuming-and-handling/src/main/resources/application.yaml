@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  cloud:
+    stream:
+      default:
+        group: NonBlockingRetry
+        producer:
+          header-mode: none
+        consumer:
+          maxAttempts: 11
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKERS}
+          configuration:
+            security:
+              protocol: PLAINTEXT
+        bindings:
+          default:
+            consumer:
+              ack-mode: record
+        default:
+          content-type: application/json
+          consumer:
+            start-offset: earliest
+      bindings:
+        default:
+          content-type: application/json
+        # Consumer kafka topic
+        kafkaConsumer-in-0:
+          destination: KafkaConsumer
+          consumer:
+            max-attempts: 1
+    function:
+      definition: kafkaConsumer

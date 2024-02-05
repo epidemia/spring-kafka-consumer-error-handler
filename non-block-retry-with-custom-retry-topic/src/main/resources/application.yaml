@@ -1,0 +1,43 @@
+spring:
+  cloud:
+    stream:
+      default:
+        group: NonBlockRetry
+        producer:
+          header-mode: none
+        consumer:
+          maxAttempts: 11
+      kafka:
+        binder:
+          brokers: ${KAFKA_BROKERS}
+          configuration:
+            security:
+              protocol: PLAINTEXT
+        bindings:
+          default:
+            consumer:
+              ack-mode: record
+        default:
+          content-type: application/json
+          consumer:
+            start-offset: earliest
+      bindings:
+        default:
+          content-type: application/json
+        # Producer kafka topic
+        retryTopicProducer-out-0:
+          destination: RetryTopic
+        # Consumer kafka topic
+        nonBlockRetryConsumer-in-0:
+          destination: NonBlockRetry
+          consumer:
+            max-attempts: 1
+        retryTopicConsumer-in-0:
+          destination: RetryTopic
+          consumer:
+            max-attempts: 4
+            back-off-initial-interval: 1000
+            back-off-max-interval: 10000
+            back-off-multiplier: 2
+    function:
+      definition: nonBlockRetryConsumer;retryTopicConsumer
