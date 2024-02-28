@@ -18,6 +18,8 @@
         <module>block-retry</module>
         <module>non-block-retry-with-custom-retry-topic</module>
         <module>non-block-retry-without-retry-topic</module>
+        <module>non-block-retry-with-spring-retry-management</module>
+        <module>split-consuming-and-handling</module>
     </modules>
 
     <properties>
